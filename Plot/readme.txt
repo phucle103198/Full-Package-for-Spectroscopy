@@ -1,0 +1,1 @@
+Function for Plot Spectra by Matplotlib

@@ -1,0 +1,1 @@
+Function for find parameter of model
