@@ -1,14 +1,3 @@
-"""
-    -*- coding: utf-8 -*-
-    @Time   :2022/04/12 17:10
-    @Author : Pengyou FU
-    @blogs  : https://blog.csdn.net/Echo_Code?spm=1000.2115.3001.5343
-    @github : https://github.com/FuSiry/OpenSA
-    @WeChat : Fu_siry
-    @License：Apache-2.0 license
-
-"""
-
 from WaveSelect.Lar import Lar
 from WaveSelect.Spa import SPA
 from WaveSelect.Uve import UVE
@@ -18,13 +7,6 @@ from WaveSelect.GA import GA
 from sklearn.model_selection import train_test_split
 
 def SpctrumFeatureSelcet(method, X, y):
-    """
-       :param method: 波长筛选/降维的方法，包括：Cars, Lars, Uve, Spa, Pca
-       :param X: 光谱数据, shape (n_samples, n_features)
-       :param y: 光谱数据对应标签：格式：(n_samples，)
-       :return: X_Feature： 波长筛选/降维后的数据, shape (n_samples, n_features)
-                y：光谱数据对应的标签, (n_samples，)
-    """
     if method == "None":
         X_Feature = X
     elif method== "Cars":
