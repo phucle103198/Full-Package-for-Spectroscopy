@@ -22,8 +22,6 @@ def GA(X, y, number_of_generation=10):
     min_boundary = np.zeros(X.shape[1])
     max_boundary = np.ones(X.shape[1]) * 1.0
 
-    # 基础参数
-
     probability_of_crossover = 0.5
     probability_of_mutation = 0.2
     threshold_of_variable_selection = 0.5
@@ -34,8 +32,6 @@ def GA(X, y, number_of_generation=10):
             index.append(random.uniform(min, max))
         return index
 
-    # individual 个体
-    # population 种群
     toolbox.register('create_ind', create_ind_uniform, min_boundary, max_boundary)
     toolbox.register('individual', tools.initIterate, creator.Individual, toolbox.create_ind)
     toolbox.register('population', tools.initRepeat, list, toolbox.individual)
@@ -64,13 +60,9 @@ def GA(X, y, number_of_generation=10):
         return value
 
     toolbox.register('evaluate', evalOneMax)
-    # 加入交叉变换
     toolbox.register('mate', tools.cxTwoPoint)
-    # 设置突变几率
     toolbox.register('mutate', tools.mutFlipBit, indpb=0.05)
-    # 挑选个体
     toolbox.register('select', tools.selTournament, tournsize=3)
-    # 种群
     random.seed()
     pop = toolbox.population(n=len(y))
 
@@ -96,7 +88,7 @@ def GA(X, y, number_of_generation=10):
         fitnesses = map(toolbox.evaluate, invalid_ind)
         for ind, fit in zip(invalid_ind, fitnesses):
             ind.fitness.values = fit
-        # 选出来的个体(描述符)
+
         print('  Evaluated %i individuals' % len(invalid_ind))
 
         pop[:] = offspring
