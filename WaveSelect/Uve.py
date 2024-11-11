@@ -1,17 +1,3 @@
-"""
-    -*- coding: utf-8 -*-
-    @Time   :2022/04/12 17:10
-    @Author : Pengyou FU
-    @blogs  : https://blog.csdn.net/Echo_Code?spm=1000.2115.3001.5343
-    @github : https://github.com/FuSiry/OpenSA
-    @WeChat : Fu_siry
-    @License：Apache-2.0 license
-
-"""
-
-
-
-
 from sklearn.cross_decomposition import PLSRegression
 from sklearn.linear_model import LinearRegression
 from sklearn.metrics import mean_squared_error
@@ -24,15 +10,6 @@ import numpy as np
 
 class UVE:
     def __init__(self, x, y, ncomp=1, nrep=500, testSize=0.2):
-
-        '''
-        X : 预测变量矩阵
-        y ：标签
-        ncomp : 结果包含的变量个数
-        testSize: PLS中划分的数据集
-        return ：波长筛选后的光谱数据
-        '''
-
         self.x = x
         self.y = y
         # The number of latent components should not be larger than any dimension size of independent matrix
