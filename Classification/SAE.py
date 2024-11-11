@@ -1,16 +1,3 @@
-"""
-    -*- coding: utf-8 -*-
-    @Time   :2022/04/15 9:36
-    @Author : Pengyou FU
-    @blogs  : https://blog.csdn.net/Echo_Code?spm=1000.2115.3001.5343
-    @github : https://github.com/FuSiry/OpenSA
-    @WeChat : Fu_siry
-    @License：Apache-2.0 license
-
-"""
-
-
-
 import torch
 from torch import nn
 import torch.nn.functional as F
@@ -113,8 +100,8 @@ class SAE_net(object):
 
         for i in range(epoch):
             sum_loss = 0
-            if trainLayer != 0:  # 单独处理第0层，因为第一个编码器之前没有前驱的编码器了
-                for i in range(trainLayer):  # 冻结要训练前面的所有参数
+            if trainLayer != 0:  
+                for i in range(trainLayer): 
                     for param in encoderList[i].parameters():
                         param.requires_grad = False
 
@@ -125,7 +112,6 @@ class SAE_net(object):
                 x, target = Variable(x).type(torch.FloatTensor), Variable(target).type(torch.LongTensor)
                 # x = x.view(-1, 404)
                 x = x.view(x.size(0), -1)
-                # 产生需要训练层的输入数据
                 # inputs = Variable(inputs).type(torch.FloatTensor).to(device)  # batch x
                 # labels = Variable(labels).type(torch.LongTensor).to(device)  # batch y
                 out = x
@@ -133,7 +119,6 @@ class SAE_net(object):
                     for i in range(trainLayer):
                         out = encoderList[i](out, rep=True)
 
-                # 训练指定的自编码器
                 pred = encoderList[trainLayer](out, rep=False).cpu()
 
                 loss = ceriation(pred, out)
@@ -145,7 +130,6 @@ class SAE_net(object):
         if useCuda:
             model = model.to(device)
 
-        # 解锁参数
         for param in model.parameters():
             param.requires_grad = True
 
