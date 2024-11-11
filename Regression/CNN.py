@@ -1,9 +1,3 @@
-"""
-    Create on 2021-1-21
-    Author：Pengyou Fu
-    Describe：this for train NIRS with use 1-D Resnet model to transfer
-"""
-
 import numpy as np
 import torch
 import torch.nn as nn
@@ -27,7 +21,6 @@ TBATCH_SIZE = 240
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-#自定义加载数据集
 class MyDataset(Dataset):
     def __init__(self,specs,labels):
         self.specs = specs
@@ -42,8 +35,7 @@ class MyDataset(Dataset):
 
 
 
-###定义是否需要标准化
-def ZspPocessnew(X_train, X_test, y_train, y_test, need=True): #True:需要标准化，Flase：不需要标准化
+def ZspPocessnew(X_train, X_test, y_train, y_test, need=True): 
 
     global standscale
     global yscaler
@@ -61,7 +53,6 @@ def ZspPocessnew(X_train, X_test, y_train, y_test, need=True): #True:需要标�
         X_train_Nom = X_train_Nom[:, np.newaxis, :]
         X_test_Nom = X_test_Nom[:, np.newaxis, :]
 
-        ##使用loader加载测试数据
         data_train = MyDataset(X_train_Nom, y_train)
         data_test = MyDataset(X_test_Nom, y_test)
         return data_train, data_test
@@ -76,7 +67,6 @@ def ZspPocessnew(X_train, X_test, y_train, y_test, need=True): #True:需要标�
         y_test = yscaler.transform(y_test)
 
         data_train = MyDataset(X_train_new, y_train)
-        ##使用loader加载测试数据
         data_test = MyDataset(X_test_new, y_test)
 
         return data_train, data_test
@@ -102,21 +92,21 @@ def CNNTrain(NetType, X_train, X_test, y_train, y_test, EPOCH):
 
 
 
-    criterion = nn.MSELoss().to(device)  # 损失函数为焦损函数，多用于类别不平衡的多分类问题
-    optimizer = optim.Adam(model.parameters(), lr=LR)#,  weight_decay=0.001)  # 优化方式为mini-batch momentum-SGD，并采用L2正则化（权重衰减）
+    criterion = nn.MSELoss().to(device) 
+    optimizer = optim.Adam(model.parameters(), lr=LR)
     # # initialize the early_stopping object
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, 'min', factor=0.5, verbose=1, eps=1e-06,
                                                            patience=20)
-    print("Start Training!")  # 定义遍历数据集的次数
+    print("Start Training!") 
     # to track the training loss as the model trains
     for epoch in range(EPOCH):
         train_losses = []
-        model.train()  # 不训练
+        model.train() 
         train_rmse = []
         train_r2 = []
         train_mae = []
         for i, data in enumerate(train_loader):  # gives batch data, normalize x when iterate train_loader
-            inputs, labels = data  # 输入和标签都等于data
+            inputs, labels = data 
             inputs = Variable(inputs).type(torch.FloatTensor).to(device)  # batch x
             labels = Variable(labels).type(torch.FloatTensor).to(device)  # batch y
             output = model(inputs)  # cnn output
@@ -139,16 +129,16 @@ def CNNTrain(NetType, X_train, X_test, y_train, y_test, EPOCH):
         print('Epoch:{}, TRAIN:rmse:{}, R2:{}, mae:{}'.format((epoch+1), (avgrmse), (avgr2), (avgmae)))
         print('lr:{}, avg_train_loss:{}'.format((optimizer.param_groups[0]['lr']), avg_train_loss))
 
-        with torch.no_grad():  # 无梯度
-            model.eval()  # 不训练
+        with torch.no_grad():
+            model.eval() 
             test_rmse = []
             test_r2 = []
             test_mae = []
             for i, data in enumerate(test_loader):
-                inputs, labels = data  # 输入和标签都等于data
+                inputs, labels = data 
                 inputs = Variable(inputs).type(torch.FloatTensor).to(device)  # batch x
                 labels = Variable(labels).type(torch.FloatTensor).to(device)  # batch y
-                outputs = model(inputs)  # 输出等于进入网络后的输入
+                outputs = model(inputs)
                 pred = outputs.detach().cpu().numpy()
                 y_true = labels.detach().cpu().numpy()
                 rmse, R2, mae = ModelRgsevaluatePro(pred, y_true, yscaler)
@@ -159,7 +149,6 @@ def CNNTrain(NetType, X_train, X_test, y_train, y_test, EPOCH):
             avgr2   = np.mean(test_r2)
             avgmae = np.mean(test_mae)
             print('EPOCH：{}, TEST: rmse:{}, R2:{}, mae:{}'.format((epoch+1), (avgrmse), (avgr2), (avgmae)))
-            # 将每次测试结果实时写入acc.txt文件中
             scheduler.step(rmse)
 
     return avgrmse, avgr2, avgmae
