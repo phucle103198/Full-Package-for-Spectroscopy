@@ -1,14 +1,3 @@
-"""
-    -*- coding: utf-8 -*-
-    @Time   :2022/04/12 17:10
-    @Author : Pengyou FU
-    @blogs  : https://blog.csdn.net/Echo_Code?spm=1000.2115.3001.5343
-    @github : https://github.com/FuSiry/OpenSA
-    @WeChat : Fu_siry
-    @License：Apache-2.0 license
-
-"""
-
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import font_manager as fm, rcParams
@@ -17,19 +6,8 @@ from sklearn.model_selection import KFold
 from sklearn.metrics import mean_squared_error
 import copy
 
-# ref: https://blog.csdn.net/qq2512446791
 
 def PC_Cross_Validation(X, y, pc, cv):
-    '''
-        x :光谱矩阵 nxm
-        y :浓度阵 （化学值）
-        pc:最大主成分数
-        cv:交叉验证数量
-    return :
-        RMSECV:各主成分数对应的RMSECV
-        PRESS :各主成分数对应的PRESS
-        rindex:最佳主成分数
-    '''
     kf = KFold(n_splits=cv)
     RMSECV = []
     for i in range(pc):
@@ -47,14 +25,6 @@ def PC_Cross_Validation(X, y, pc, cv):
     return RMSECV, rindex
 
 def Cross_Validation(X, y, pc, cv):
-    '''
-     x :光谱矩阵 nxm
-     y :浓度阵 （化学值）
-     pc:最大主成分数
-     cv:交叉验证数量
-     return :
-            RMSECV:各主成分数对应的RMSECV
-    '''
     kf = KFold(n_splits=cv)
     RMSE = []
     for train_index, test_index in kf.split(X):
